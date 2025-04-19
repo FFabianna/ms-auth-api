@@ -29,9 +29,9 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-        docker build -t $REGISTRY/auth-api-image:${IMAGE_TAG} -t $REGISTRY/auth-api-image:latest .
-        docker push $REGISTRY/auth-api-image:${IMAGE_TAG}
-        docker push $REGISTRY/auth-api-image:latest
+        docker build -t $REGISTRY/authapi-image:${IMAGE_TAG} -t $REGISTRY/authapi-image:latest .
+        docker push $REGISTRY/authapi-image:${IMAGE_TAG}
+        docker push $REGISTRY/authapi-image:latest
 
     - name: Set AKS context
       uses: azure/aks-set-context@v3
@@ -46,4 +46,4 @@ jobs:
 
     - name: Ensure latest image is deployed
       run: |
-        kubectl set image deployment/authapi authapi=$REGISTRY/auth-api-image:${IMAGE_TAG}
+        kubectl set image deployment/authapi authapi=$REGISTRY/authapi-image:${IMAGE_TAG}
