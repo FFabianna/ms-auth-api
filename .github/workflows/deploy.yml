@@ -46,4 +46,4 @@ jobs:
 
     - name: Ensure latest image is deployed
       run: |
-        kubectl set image deployment/auth-api auth-api=$REGISTRY/auth-api-image:${IMAGE_TAG}
+        kubectl set image deployment/authapi authapi=$REGISTRY/auth-api-image:${IMAGE_TAG}
