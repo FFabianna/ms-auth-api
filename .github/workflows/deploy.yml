@@ -16,6 +16,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Set image tag from commit SHA
+      run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+
     - name: Azure login
       uses: azure/login@v1
       with:
@@ -26,14 +29,21 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-        docker build -t $REGISTRY/authapi-image .
-        docker push $REGISTRY/authapi-image
+        docker build -t $REGISTRY/auth-api-image:${IMAGE_TAG} -t $REGISTRY/auth-api-image:latest .
+        docker push $REGISTRY/auth-api-image:${IMAGE_TAG}
+        docker push $REGISTRY/auth-api-image:latest
+
     - name: Set AKS context
       uses: azure/aks-set-context@v3
       with:
         resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
         cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+
     - name: Deploy to AKS with kubectl
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
+
+    - name: Ensure latest image is deployed
+      run: |
+        kubectl set image deployment/auth-api auth-api=$REGISTRY/auth-api-image:${IMAGE_TAG}
