@@ -1,4 +1,5 @@
 # Use the official Go image as a base image
+# This Dockerfile builds and runs a Go-based authentication microservice. 
 FROM golang:1.22
 
 WORKDIR /usr/src/app
